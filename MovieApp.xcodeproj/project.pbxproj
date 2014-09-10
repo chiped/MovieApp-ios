@@ -100,8 +100,8 @@
 		45E1BCE119B89A0A005D7118 = {
 			isa = PBXGroup;
 			children = (
-				45E1BCF319B89A0A005D7118 /* MovieAp */,
-				45E1BD1519B89A0A005D7118 /* MovieApTests */,
+				45E1BCF319B89A0A005D7118 /* MovieApp */,
+				45E1BD1519B89A0A005D7118 /* MovieAppTests */,
 				45E1BCEC19B89A0A005D7118 /* Frameworks */,
 				45E1BCEB19B89A0A005D7118 /* Products */,
 			);
@@ -127,7 +127,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		45E1BCF319B89A0A005D7118 /* MovieAp */ = {
+		45E1BCF319B89A0A005D7118 /* MovieApp */ = {
 			isa = PBXGroup;
 			children = (
 				45E1BCFC19B89A0A005D7118 /* AppDelegate.h */,
@@ -150,6 +150,7 @@
 				4581EE4019B89ED00087ACAD /* Cast.m */,
 				45E1BD2919B89ADC005D7118 /* Movie.m */,
 			);
+			name = MovieApp;
 			path = MovieAp;
 			sourceTree = "<group>";
 		};
@@ -164,12 +165,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		45E1BD1519B89A0A005D7118 /* MovieApTests */ = {
+		45E1BD1519B89A0A005D7118 /* MovieAppTests */ = {
 			isa = PBXGroup;
 			children = (
 				45E1BD1B19B89A0A005D7118 /* MovieApTests.m */,
 				45E1BD1619B89A0A005D7118 /* Supporting Files */,
 			);
+			name = MovieAppTests;
 			path = MovieApTests;
 			sourceTree = "<group>";
 		};
