@@ -27,6 +27,19 @@
 @property (weak, nonatomic) IBOutlet UIView *detailsView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityView;
 @property (weak, nonatomic) IBOutlet UITableView *castTable;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *castTableHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *detailsViewHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *productionsLabelHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *productionsHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *genresLabelHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *genresHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *languagesLabelHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *languagesHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *locationsLabelHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *locationsHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *castLabelHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *plotScrollerHeight;
 - (void)configureView;
 
 @end
@@ -54,15 +67,16 @@
     
     if(!castImageList[indexPath]) {
         dispatch_async(castImagesQueue, ^{
-            UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[object photoURL]]];
-            if(image) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    UITableViewCell *newCell = [tableView cellForRowAtIndexPath:indexPath];
-                    newCell.imageView.image = image;
-                    [castImageList setObject:image forKey:indexPath];
-                    [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                });
-            }
+            __block UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[object photoURL]]];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UITableViewCell *newCell = [tableView cellForRowAtIndexPath:indexPath];
+                if(!image) {
+                    image = [UIImage imageNamed:@"noImage"];
+                }
+                newCell.imageView.image = image;
+                [castImageList setObject:image forKey:indexPath];
+                [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            });
         });
     }
     
@@ -87,7 +101,7 @@
         
         [[self detailsView] setHidden:YES];
         [[self activityView] setHidden:NO];
-        
+                
         [[self activityView] startAnimating];
         __block NSData *data;
         __block NSError *error=nil;
@@ -141,12 +155,53 @@
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.poster.image = [UIImage imageWithData: [NSData dataWithContentsOfURL: [self.movie getLargePosterURL]]];
+                
+                if(!self.poster.image) {
+                    self.imageHeight.constant = 0;
+                }
                 self.plot.text = [jsonobject objectForKey:@"overview"];
+                [self.plot sizeToFit];
+                
+                if(self.plot.frame.size.height < self.plotScrollerHeight.constant) {
+                    self.plotScrollerHeight.constant = self.plot.frame.size.height;
+                }
+                
                 self.genres.text = genreString;
+                [self.genres sizeToFit];
                 self.productions.text = productionString;
+                [self.productions sizeToFit];
                 self.languages.text = languageString;
+                [self.languages sizeToFit];
                 self.locaitons.text = countryString;
+                [self.locaitons sizeToFit];
+                
                 [[self castTable] reloadData];
+                
+                
+                self.genresHeight.constant = self.genres.frame.size.height;
+                if([genreString isEqualToString:@""]) {
+                    self.genresLabelHeight.constant = 0;
+                }
+                self.productionsHeight.constant = self.productions.frame.size.height;
+                if([productionString isEqualToString:@""])
+                {
+                    self.productionsLabelHeight.constant = 0;
+                }
+                self.locationsHeight.constant = self.locaitons.frame.size.height;
+                if([countryString isEqualToString:@""]) {
+                    self.locationsLabelHeight.constant = 0;
+                }
+                self.languagesHeight.constant = self.languages.frame.size.height;
+                if([languageString isEqualToString:@""]) {
+                    self.languagesLabelHeight.constant = 0;
+                }
+                if(_objects.count == 0) {
+                    self.castLabelHeight.constant = 0;
+                }
+                
+                self.castTableHeight.constant = [self castTable].contentSize.height;
+                self.detailsViewHeight.constant = self.castTable.frame.origin.y + self.castTable.contentSize.height + 8;
+                
                 [[self detailsView] setHidden:NO];
                 [[self activityView] setHidden:YES];
             });

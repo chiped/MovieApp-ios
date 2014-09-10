@@ -11,7 +11,7 @@
 #import "MasterViewController.h"
 
 @interface MainScreen () {
-NSMutableArray *_objects;
+NSArray *_objects;
 }
 @end
 
@@ -49,11 +49,7 @@ NSMutableArray *_objects;
             [alert show];
        
     }
-    _objects = [[NSMutableArray alloc] init];
-    [_objects addObject:@"Now playing"];
-    [_objects addObject:@"Top Rated"];
-    [_objects addObject:@"Upcoming"];
-    [_objects addObject:@"Popular"];
+    _objects = [Constants getTitleArray];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     

@@ -105,17 +105,19 @@
     cell.year.text = [object date];
     
     cell.poster.image = movieImagesList[indexPath];
- 
+    
     if(!movieImagesList[indexPath]) {
         dispatch_async(getMovieImages, ^{
-            UIImage *image = [UIImage imageWithData: [NSData dataWithContentsOfURL: [object getSmallPosterURL]]];
-            if(image) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    TableViewCell *newcell = (TableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-                    newcell.poster.image = image;
-                    [movieImagesList setObject:image forKey:indexPath];
-                });
-            }
+            __block UIImage *image = [UIImage imageWithData: [NSData dataWithContentsOfURL: [object getSmallPosterURL]]];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                TableViewCell *newcell = (TableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+                if(!image) {
+                    image = [UIImage imageNamed:@"noImage"];
+                }
+                newcell.poster.image = image;
+                [movieImagesList setObject:image forKey:indexPath];
+            });
         });
     }
     return cell;
@@ -172,7 +174,7 @@
         
         page++;
         NSString *str=[NSString stringWithFormat:@"%@%@%d", [Constants getURLString:[self type]], @"&page=", page];
-
+        
         __block NSURL *url=[NSURL URLWithString:str];
         
         dispatch_async(getMovieList, ^{
