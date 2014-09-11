@@ -115,7 +115,7 @@
             for(int i=0;i<[genres count]; i++) {
                 genreString = [genreString stringByAppendingString:[genres[i] objectForKey:@"name"]];
                 if(i!=[genres count]-1)
-                    genreString = [genreString stringByAppendingString:@","];
+                    genreString = [genreString stringByAppendingString:@", "];
             }
             
             NSArray *productions = [jsonobject objectForKey:@"production_companies"];
@@ -123,7 +123,7 @@
             for(int i=0;i<[productions count]; i++) {
                 productionString = [productionString stringByAppendingString:[productions[i] objectForKey:@"name"]];
                 if(i!=[productions count]-1)
-                    productionString = [productionString stringByAppendingString:@","];
+                    productionString = [productionString stringByAppendingString:@", "];
             }
             
             NSArray *languages = [jsonobject objectForKey:@"spoken_languages"];
@@ -131,7 +131,7 @@
             for(int i=0;i<[languages count]; i++) {
                 languageString = [languageString stringByAppendingString:[languages[i] objectForKey:@"name"]];
                 if(i!=[languages count]-1)
-                    languageString = [languageString stringByAppendingString:@","];
+                    languageString = [languageString stringByAppendingString:@", "];
             }
             
             NSArray *countries = [jsonobject objectForKey:@"production_countries"];
@@ -139,7 +139,7 @@
             for(int i=0;i<[countries count]; i++) {
                 countryString = [countryString stringByAppendingString:[countries[i] objectForKey:@"name"]];
                 if(i!=[countries count]-1)
-                    countryString = [countryString stringByAppendingString:@","];
+                    countryString = [countryString stringByAppendingString:@", "];
             }
             
             //fill cast deatils
@@ -199,6 +199,7 @@
                     self.castLabelHeight.constant = 0;
                 }
                 
+                [self.castTable sizeToFit];
                 self.castTableHeight.constant = [self castTable].contentSize.height;
                 self.detailsViewHeight.constant = self.castTable.frame.origin.y + self.castTable.contentSize.height + 8;
                 

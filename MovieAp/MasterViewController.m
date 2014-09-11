@@ -12,6 +12,7 @@
 
 @interface MasterViewController () {
     NSMutableArray *_objects;
+    NSMutableArray *filteredResults;
     Constants *constants;
     dispatch_queue_t getMovieImages;
     dispatch_queue_t getMovieList;
@@ -19,6 +20,7 @@
     int page;
 }
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIView *mainView;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @end
 
@@ -40,10 +42,12 @@
     if(!getMovieList)
         getMovieList = dispatch_queue_create("get movie list", NULL);
     
-    [[self tableView] setHidden:YES];
+    [[self mainView] setHidden:YES];
     [[self indicator] setHidden:NO];
     [[self indicator] startAnimating];
 
+    [self.searchDisplayController.searchResultsTableView registerClass:[TableViewCell class] forCellReuseIdentifier:@"result cell"];
+    
     NSString *str=[Constants getURLString:[self type]];
     NSURL *url=[NSURL URLWithString:str];
     __block NSData *data;
@@ -65,15 +69,45 @@
         }
         //[NSThread sleepForTimeInterval:5];
         
+        filteredResults = [NSMutableArray arrayWithArray:_objects];
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             [[self tableView] reloadData];
-            [[self tableView] setHidden:NO];
+            [[self mainView] setHidden:NO];
             [[self indicator] setHidden:YES];
             [[self indicator] startAnimating];
         });
     });
     
     [self setTitle:[[Constants getTitleArray] objectAtIndex:[self type]]];
+}
+
+-(void)filterContentForSearchText: (NSString*)searchText scope:(NSString*)scope
+{
+    [filteredResults removeAllObjects];
+    searchText = [searchText stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
+    if(searchText.length == 0) {
+        filteredResults = [NSMutableArray arrayWithArray:_objects] ;
+        return;
+    }
+    NSPredicate *basicPredicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@", searchText];
+    NSLog(@"SELF.title MATCHES '.*(%@).*'", searchText);
+    
+    NSPredicate *advancedPredicate = [[NSPredicate alloc]init];
+    NSArray *words = [searchText componentsSeparatedByString:@" "];
+    for(NSString *word in words) {
+        if(word.length > 0) {
+            advancedPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[[NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@", word]]];
+        }
+    }
+    
+    filteredResults = [NSMutableArray arrayWithArray:[_objects filteredArrayUsingPredicate:[NSCompoundPredicate orPredicateWithSubpredicates:@[basicPredicate, advancedPredicate]]]];
+}
+
+-(BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+{
+    [self filterContentForSearchText:searchString scope:[[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]] ];
+    return YES;
 }
 
 - (void)didReceiveMemoryWarning
@@ -91,20 +125,36 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if(tableView == self.searchDisplayController.searchResultsTableView)
+    {
+        return filteredResults.count;
+    }
     return _objects.count;
 }
 
 - (TableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    TableViewCell *cell;
+    Movie *object;
     
-    Movie *object = _objects[indexPath.row];
+    if(tableView == self.searchDisplayController.searchResultsTableView)
+    {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"result cell" forIndexPath:indexPath];
+        object = filteredResults[indexPath.row];
+        cell.textLabel.text = object.title;
+        cell.imageView.image = movieImagesList[object.movieId];
+    }
+    else
+    {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+        object = _objects[indexPath.row];
+    }
     
     cell.name.text = [object title];
     cell.rating.text = [object rating];
     cell.year.text = [object date];
     
-    cell.poster.image = movieImagesList[indexPath];
+    cell.poster.image = movieImagesList[object.movieId];
     
     if(!movieImagesList[indexPath]) {
         dispatch_async(getMovieImages, ^{
@@ -116,7 +166,7 @@
                     image = [UIImage imageNamed:@"noImage"];
                 }
                 newcell.poster.image = image;
-                [movieImagesList setObject:image forKey:indexPath];
+                [movieImagesList setObject:image forKey:object.movieId];
             });
         });
     }
@@ -155,13 +205,25 @@
 }
 */
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(tableView == self.searchDisplayController.searchResultsTableView) {
+        [self performSegueWithIdentifier:@"showDetail" sender:self];
+    }
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([[segue identifier] isEqualToString:@"showDetail"]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        Movie *object = _objects[indexPath.row];
-        [[segue destinationViewController] setMovie:object];
+    NSIndexPath *indexPath;
+    Movie *object;
+    if([self.searchDisplayController isActive]) {
+        indexPath = [self.searchDisplayController.searchResultsTableView indexPathForSelectedRow];
+        object = filteredResults[indexPath.row];
+    } else {
+        indexPath = [self.tableView indexPathForSelectedRow];
+        object = _objects[indexPath.row];
     }
+    [[segue destinationViewController] setMovie:object];
 }
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView

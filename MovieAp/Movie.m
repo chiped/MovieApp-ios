@@ -15,7 +15,8 @@
     self.movieId = [NSString stringWithFormat:@"%@", [object objectForKey:@"id"]];
     self.title = [NSString stringWithFormat:@"%@", [object objectForKey:@"original_title"]];
     self.date = [NSString stringWithFormat:@"%@", [object objectForKey:@"release_date"]];
-    self.rating = [NSString stringWithFormat:@"%@", [object objectForKey:@"vote_average"]];
+    NSDecimalNumber *avgRating = [object objectForKey:@"vote_average"];
+    self.rating = [NSString stringWithFormat:@"%2.1f", avgRating.doubleValue];
     self.posterPath = [NSString stringWithFormat:@"%@", [object objectForKey:@"poster_path"]];
     self.castURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@%@", [Constants baseURL], self.movieId, @"/credits", [Constants APIKEY]]];
     return self;

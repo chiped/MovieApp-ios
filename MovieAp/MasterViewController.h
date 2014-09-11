@@ -10,6 +10,6 @@
 #import "Constants.h"
 #import "TableViewCell.h"
 
-@interface MasterViewController : UIViewController
+@interface MasterViewController : UIViewController<UISearchDisplayDelegate, UITableViewDelegate>
 @property (readwrite) int type;
 @end
