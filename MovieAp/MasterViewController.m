@@ -90,18 +90,15 @@
         filteredResults = [NSMutableArray arrayWithArray:_objects] ;
         return;
     }
-    NSPredicate *basicPredicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@", searchText];
-    NSLog(@"SELF.title MATCHES '.*(%@).*'", searchText);
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@", searchText];
     
-    NSPredicate *advancedPredicate = [[NSPredicate alloc]init];
     NSArray *words = [searchText componentsSeparatedByString:@" "];
     for(NSString *word in words) {
         if(word.length > 0) {
-            advancedPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[[NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@", word]]];
+            predicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[predicate, [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@", word]]];
         }
     }
-    
-    filteredResults = [NSMutableArray arrayWithArray:[_objects filteredArrayUsingPredicate:[NSCompoundPredicate orPredicateWithSubpredicates:@[basicPredicate, advancedPredicate]]]];
+    filteredResults = [NSMutableArray arrayWithArray:[_objects filteredArrayUsingPredicate: predicate]];
 }
 
 -(BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString

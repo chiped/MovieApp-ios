@@ -29,7 +29,6 @@
 @property (weak, nonatomic) IBOutlet UITableView *castTable;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *castTableHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *detailsViewHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *productionsLabelHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *productionsHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *genresLabelHeight;
@@ -40,6 +39,8 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *locationsHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *castLabelHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *plotScrollerHeight;
+@property (weak, nonatomic) IBOutlet UINavigationBar *actualNavigationBar;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *overviewHeight;
 - (void)configureView;
 
 @end
@@ -92,10 +93,13 @@
     
     if(!downloadDataQueue)
         downloadDataQueue = dispatch_queue_create("downloadData", NULL);
+    
+    self.actualNavigationBar.topItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:nil action:@selector(backAction)];
 
     if (self.movie) {
         self.name.text = [self.movie title];
         self.title = [self.movie title];
+        self.actualNavigationBar.topItem.title = [self.movie title];
         self.year.text = [self.movie date];
         self.rating.text = [self.movie rating];
         
@@ -159,7 +163,12 @@
                 if(!self.poster.image) {
                     self.imageHeight.constant = 0;
                 }
-                self.plot.text = [jsonobject objectForKey:@"overview"];
+                NSString *overview = [jsonobject objectForKey:@"overview"];
+                if(overview.class != [NSNull class]) {
+                    self.plot.text = overview;
+                } else {
+                    self.overviewHeight.constant = 0;
+                }
                 [self.plot sizeToFit];
                 
                 if(self.plot.frame.size.height < self.plotScrollerHeight.constant) {
@@ -180,6 +189,7 @@
                 
                 self.genresHeight.constant = self.genres.frame.size.height;
                 if([genreString isEqualToString:@""]) {
+                    NSLog(@"Here");
                     self.genresLabelHeight.constant = 0;
                 }
                 self.productionsHeight.constant = self.productions.frame.size.height;
@@ -199,9 +209,9 @@
                     self.castLabelHeight.constant = 0;
                 }
                 
-                [self.castTable sizeToFit];
-                self.castTableHeight.constant = [self castTable].contentSize.height;
-                self.detailsViewHeight.constant = self.castTable.frame.origin.y + self.castTable.contentSize.height + 8;
+                if(self.castTableHeight.constant > [self castTable].contentSize.height) {
+                    self.castTableHeight.constant = [self castTable].contentSize.height;
+                }
                 
                 [[self detailsView] setHidden:NO];
                 [[self activityView] setHidden:YES];
@@ -209,6 +219,11 @@
         });
         [[self outerScrollView] setContentSize:CGSizeMake(320, 500)];
     }
+}
+
+- (void) backAction
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)viewDidLoad
