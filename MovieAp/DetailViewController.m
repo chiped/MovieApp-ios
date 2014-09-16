@@ -29,13 +29,9 @@
 @property (weak, nonatomic) IBOutlet UITableView *castTable;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *castTableHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *productionsLabelHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *productionsHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *genresLabelHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *genresHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *languagesLabelHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *languagesHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *locationsLabelHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *locationsHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *castLabelHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *plotScrollerHeight;
@@ -188,23 +184,9 @@
                 
                 
                 self.genresHeight.constant = self.genres.frame.size.height;
-                if([genreString isEqualToString:@""]) {
-                    NSLog(@"Here");
-                    self.genresLabelHeight.constant = 0;
-                }
                 self.productionsHeight.constant = self.productions.frame.size.height;
-                if([productionString isEqualToString:@""])
-                {
-                    self.productionsLabelHeight.constant = 0;
-                }
                 self.locationsHeight.constant = self.locaitons.frame.size.height;
-                if([countryString isEqualToString:@""]) {
-                    self.locationsLabelHeight.constant = 0;
-                }
                 self.languagesHeight.constant = self.languages.frame.size.height;
-                if([languageString isEqualToString:@""]) {
-                    self.languagesLabelHeight.constant = 0;
-                }
                 if(_objects.count == 0) {
                     self.castLabelHeight.constant = 0;
                 }

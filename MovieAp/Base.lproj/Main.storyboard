@@ -295,7 +295,7 @@
                                                 <rect key="frame" x="81" y="443" width="230" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="21" id="vWw-GY-jqd"/>
+                                                    <constraint firstAttribute="height" constant="21" id="vWw-GY-jqd"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="highlightedColor"/>
@@ -305,7 +305,7 @@
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="99" id="Hjn-kp-e9O"/>
-                                                    <constraint firstAttribute="height" constant="21" id="YlW-90-h9m"/>
+                                                    <constraint firstAttribute="height" priority="250" constant="21" id="YlW-90-h9m"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="highlightedColor"/>
@@ -323,7 +323,7 @@
                                                 <rect key="frame" x="8" y="501" width="107" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="21" id="b46-uH-huh"/>
+                                                    <constraint firstAttribute="height" priority="250" constant="21" id="b46-uH-huh"/>
                                                     <constraint firstAttribute="width" constant="107" id="hu8-6t-vBW"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -351,7 +351,7 @@
                                                 <rect key="frame" x="8" y="530" width="89" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="21" id="rbp-Al-TN9"/>
+                                                    <constraint firstAttribute="height" priority="250" constant="21" id="rbp-Al-TN9"/>
                                                     <constraint firstAttribute="width" constant="89" id="suH-H0-xgh"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -412,6 +412,8 @@
                                             <constraint firstItem="tLl-aB-wLo" firstAttribute="top" secondItem="QDP-KB-riw" secondAttribute="top" id="61p-X1-hmE" userLabel="top production"/>
                                             <constraint firstItem="QDP-KB-riw" firstAttribute="leading" secondItem="Pf7-5o-7Pz" secondAttribute="leading" constant="8" id="68m-BY-JwX" userLabel="leading productions"/>
                                             <constraint firstItem="KBO-hb-s68" firstAttribute="leading" secondItem="Pf7-5o-7Pz" secondAttribute="leading" constant="8" id="9b1-FV-YFA" userLabel="leading genres"/>
+                                            <constraint firstItem="hdz-vE-vwA" firstAttribute="height" secondItem="lDV-TW-N8B" secondAttribute="height" id="9db-aF-adL" userLabel="equal height to hide language"/>
+                                            <constraint firstItem="QDP-KB-riw" firstAttribute="height" secondItem="tLl-aB-wLo" secondAttribute="height" id="CES-GU-YSV" userLabel="equal height to hide production"/>
                                             <constraint firstItem="lDV-TW-N8B" firstAttribute="leading" secondItem="hdz-vE-vwA" secondAttribute="trailing" constant="8" id="DDV-Xk-zPD" userLabel="left lagnuage"/>
                                             <constraint firstAttribute="trailing" secondItem="z6K-RF-xmy" secondAttribute="trailing" constant="8" id="GHf-eB-hvi" userLabel="trailing genre"/>
                                             <constraint firstItem="1AV-Gs-aFO" firstAttribute="top" secondItem="aVm-fH-bUn" secondAttribute="bottom" constant="8" id="GLI-PS-NCe" userLabel="top rating"/>
@@ -424,6 +426,7 @@
                                             <constraint firstItem="QDP-KB-riw" firstAttribute="top" secondItem="lDV-TW-N8B" secondAttribute="bottom" constant="8" id="ONr-vL-t3d" userLabel="top productions"/>
                                             <constraint firstItem="deD-r4-Q2K" firstAttribute="leading" secondItem="Pf7-5o-7Pz" secondAttribute="leading" priority="998" constant="8" id="OX9-iF-TtO" userLabel="leading plot"/>
                                             <constraint firstAttribute="trailing" secondItem="aVm-fH-bUn" secondAttribute="trailing" constant="8" id="QNV-ot-aHB" userLabel="trailing naem"/>
+                                            <constraint firstItem="z6K-RF-xmy" firstAttribute="height" secondItem="KBO-hb-s68" secondAttribute="height" id="QQ9-du-Pz1" userLabel="equal height to hide genre"/>
                                             <constraint firstAttribute="trailing" secondItem="teR-Ia-i7Y" secondAttribute="trailing" constant="8" id="QZd-EA-rLA"/>
                                             <constraint firstAttribute="trailing" secondItem="deD-r4-Q2K" secondAttribute="trailing" priority="998" constant="8" id="RNc-aF-aoc" userLabel="trailing plot"/>
                                             <constraint firstAttribute="trailing" secondItem="KJf-l2-fNA" secondAttribute="trailing" constant="8" id="SOu-2c-S1I" userLabel="trailing location"/>
@@ -446,6 +449,7 @@
                                             <constraint firstItem="EH1-Qh-Xhv" firstAttribute="top" secondItem="KJf-l2-fNA" secondAttribute="bottom" constant="8" id="q4T-4J-bcq" userLabel="top cast"/>
                                             <constraint firstItem="KJf-l2-fNA" firstAttribute="top" secondItem="ZRr-qh-eFc" secondAttribute="top" id="ufg-FN-Gun" userLabel="top location"/>
                                             <constraint firstAttribute="bottom" secondItem="teR-Ia-i7Y" secondAttribute="bottom" constant="8" id="wEh-gN-84V"/>
+                                            <constraint firstItem="ZRr-qh-eFc" firstAttribute="height" secondItem="KJf-l2-fNA" secondAttribute="height" id="wWm-C8-Npb" userLabel="equal height to hide location"/>
                                             <constraint firstItem="teR-Ia-i7Y" firstAttribute="top" secondItem="EH1-Qh-Xhv" secondAttribute="bottom" constant="8" id="xIc-P9-5bD"/>
                                         </constraints>
                                     </view>
@@ -488,14 +492,11 @@
                         <outlet property="detailsView" destination="Pf7-5o-7Pz" id="Uly-Mm-wsU"/>
                         <outlet property="genres" destination="z6K-RF-xmy" id="NCi-rv-pMz"/>
                         <outlet property="genresHeight" destination="vWw-GY-jqd" id="gNs-xr-BWA"/>
-                        <outlet property="genresLabelHeight" destination="JZF-OM-iBU" id="Dah-tk-5rc"/>
                         <outlet property="imageHeight" destination="u9k-H6-B6j" id="CLA-FK-Ioy"/>
                         <outlet property="languages" destination="lDV-TW-N8B" id="uja-2B-2cA"/>
                         <outlet property="languagesHeight" destination="fZf-Jo-U8u" id="X5k-8D-ria"/>
-                        <outlet property="languagesLabelHeight" destination="YlW-90-h9m" id="JYw-D6-INh"/>
                         <outlet property="locaitons" destination="KJf-l2-fNA" id="6sk-OP-c2U"/>
                         <outlet property="locationsHeight" destination="phg-Xg-g1v" id="YvU-4W-Hm7"/>
-                        <outlet property="locationsLabelHeight" destination="rbp-Al-TN9" id="iXu-5s-ERC"/>
                         <outlet property="name" destination="aVm-fH-bUn" id="9fi-Wd-j9k"/>
                         <outlet property="outerScrollView" destination="voe-Kz-WIB" id="vda-Vv-TiX"/>
                         <outlet property="overviewHeight" destination="44o-OI-ZP3" id="Xvn-gq-zD8"/>
@@ -504,7 +505,6 @@
                         <outlet property="poster" destination="rVl-OB-Nug" id="eS1-tv-bUG"/>
                         <outlet property="productions" destination="tLl-aB-wLo" id="VZC-HP-2YY"/>
                         <outlet property="productionsHeight" destination="pOv-fl-xI9" id="Wdy-fO-U83"/>
-                        <outlet property="productionsLabelHeight" destination="b46-uH-huh" id="WCg-gL-olc"/>
                         <outlet property="rating" destination="1AV-Gs-aFO" id="IAg-qO-aLg"/>
                         <outlet property="year" destination="PWz-oL-yuA" id="wi3-Kj-yIg"/>
                     </connections>
