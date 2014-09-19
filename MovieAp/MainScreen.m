@@ -1,30 +1,17 @@
-//
-//  MainScreen.m
-//  MovieAp
-//
-//  Created by ChiP on 9/4/14.
-//  Copyright (c) 2014 organization. All rights reserved.
-//
-
 #import "MainScreen.h"
-
 #import "MasterViewController.h"
 
-@interface MainScreen () {
-NSArray *_objects;
-}
+@interface MainScreen ()
+
+@property (strong, nonatomic) NSArray *titles;
+@property (strong, nonatomic) dispatch_queue_t checkInternetQueue;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+@property (weak, nonatomic) IBOutlet UIView *mainView;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+
 @end
 
 @implementation MainScreen
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 +(BOOL)hasConnectivity {
     NSURL *url = [NSURL URLWithString:@"http://www.google.com"];
@@ -39,22 +26,32 @@ NSArray *_objects;
 {
     [super viewDidLoad];
     
-    if(![MainScreen hasConnectivity]) {
-    
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No network connection"
-                                                            message:@"You must be connected to the internet to use this app."
-                                                           delegate:self
-                                                  cancelButtonTitle:@"Close app"
-                                                  otherButtonTitles:@"Retry", nil];
-            [alert show];
-       
+    if(!self.checkInternetQueue) {
+        self.checkInternetQueue = dispatch_queue_create("check_internet", NULL);
     }
-    _objects = [Constants getTitleArray];
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
+    [self.mainView setHidden:YES];
+    [self.spinner setHidden:NO];
+    [self.spinner startAnimating];
     
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    dispatch_async(self.checkInternetQueue, ^{
+        __block bool hasInternet = [MainScreen hasConnectivity];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(!hasInternet) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No network connection"
+                                                                message:@"You must be connected to the internet to use this app."
+                                                               delegate:self
+                                                      cancelButtonTitle:@"Close app"
+                                                      otherButtonTitles:@"Retry", nil];
+                [alert show];
+            }
+            [self.mainView setHidden:NO];
+            [self.spinner setHidden:YES];
+            [self.spinner stopAnimating];
+        });
+    });
+    
+    self.titles = TITLE_ARRAY;
 }
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -66,24 +63,16 @@ NSArray *_objects;
     }
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
-    return [_objects count];
+    return self.titles.count;
 }
 
 
@@ -91,65 +80,17 @@ NSArray *_objects;
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"main" forIndexPath:indexPath];
     
-    // Configure the cell...
-    cell.textLabel.text = _objects[indexPath.row];
+    cell.textLabel.text = self.titles[indexPath.row];
     return cell;
 }
 
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
     NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-    
-    MasterViewController *dest = [segue destinationViewController] ;
-    
-    
+    MasterViewController *dest = [segue destinationViewController];
     [dest setType:indexPath.row];
-
 }
-
 
 @end

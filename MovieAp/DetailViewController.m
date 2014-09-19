@@ -188,7 +188,7 @@
                 self.locationsHeight.constant = self.locaitons.frame.size.height;
                 self.languagesHeight.constant = self.languages.frame.size.height;
                 if(_objects.count == 0) {
-                    self.castLabelHeight.constant = 0;
+                    //self.castLabelHeight.constant = 0;
                 }
                 
                 if(self.castTableHeight.constant > [self castTable].contentSize.height) {
