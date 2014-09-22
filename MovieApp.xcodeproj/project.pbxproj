@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4516D5D119B8D5E1007F14A2 /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4516D5D019B8D5E1007F14A2 /* TableViewCell.m */; };
 		4516D5D419B907B0007F14A2 /* MainScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 4516D5D319B907B0007F14A2 /* MainScreen.m */; };
+		456852D719D097EF00E7B342 /* PosterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 456852D619D097EF00E7B342 /* PosterCell.m */; };
 		4581EE4119B89ED00087ACAD /* Cast.m in Sources */ = {isa = PBXBuildFile; fileRef = 4581EE4019B89ED00087ACAD /* Cast.m */; };
 		4581EE4419B89FFB0087ACAD /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 4581EE4319B89FFB0087ACAD /* Constants.m */; };
 		45B33D7619C8B25D00C450B6 /* DetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45B33D7519C8B25D00C450B6 /* DetailsViewController.m */; };
@@ -45,6 +46,8 @@
 		4516D5D019B8D5E1007F14A2 /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
 		4516D5D219B907B0007F14A2 /* MainScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainScreen.h; sourceTree = "<group>"; };
 		4516D5D319B907B0007F14A2 /* MainScreen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainScreen.m; sourceTree = "<group>"; };
+		456852D519D097EF00E7B342 /* PosterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosterCell.h; sourceTree = "<group>"; };
+		456852D619D097EF00E7B342 /* PosterCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PosterCell.m; sourceTree = "<group>"; };
 		4581EE3F19B89ED00087ACAD /* Cast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cast.h; sourceTree = "<group>"; };
 		4581EE4019B89ED00087ACAD /* Cast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cast.m; sourceTree = "<group>"; };
 		4581EE4219B89FFB0087ACAD /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
@@ -148,6 +151,8 @@
 				4581EE4319B89FFB0087ACAD /* Constants.m */,
 				45B33D7419C8B25D00C450B6 /* DetailsViewController.h */,
 				45B33D7519C8B25D00C450B6 /* DetailsViewController.m */,
+				456852D519D097EF00E7B342 /* PosterCell.h */,
+				456852D619D097EF00E7B342 /* PosterCell.m */,
 				45E1BD0819B89A0A005D7118 /* Images.xcassets */,
 				45E1BCF419B89A0A005D7118 /* Supporting Files */,
 				45E1BD2819B89ADC005D7118 /* Movie.h */,
@@ -296,6 +301,7 @@
 				4516D5D119B8D5E1007F14A2 /* TableViewCell.m in Sources */,
 				4581EE4419B89FFB0087ACAD /* Constants.m in Sources */,
 				45E1BD0719B89A0A005D7118 /* DetailViewController.m in Sources */,
+				456852D719D097EF00E7B342 /* PosterCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

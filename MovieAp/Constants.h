@@ -10,5 +10,6 @@
 @interface Constants : NSObject
 
 +(NSString *) getURLString:(int) type;
++(NSString *) stringByJoiningArray:(NSArray *)array with:(NSString *)separator;
 
 @end
