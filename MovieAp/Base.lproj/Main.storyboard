@@ -208,114 +208,6 @@
                                                     <outlet property="year" destination="GQi-Eu-bFK" id="Xtk-JC-CMQ"/>
                                                 </connections>
                                             </tableViewCell>
-                                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="dummy" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="dummy" id="yLv-Ft-uj0" customClass="TableViewCell">
-                                                <rect key="frame" x="0.0" y="66" width="320" height="44"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="yLv-Ft-uj0" id="kiR-y3-LxI">
-                                                    <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <subviews>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hyU-ed-4Ic">
-                                                            <rect key="frame" x="4" y="2" width="30" height="40"/>
-                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="width" constant="30" id="X7N-le-6pm"/>
-                                                                <constraint firstAttribute="height" constant="40" id="spN-t5-27z"/>
-                                                            </constraints>
-                                                        </imageView>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qs6-Za-Dp9">
-                                                            <rect key="frame" x="42" y="2" width="237" height="21"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Year" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YeM-f8-SgV">
-                                                            <rect key="frame" x="42" y="25" width="25" height="15"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rating" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gZX-Rs-DZq">
-                                                            <rect key="frame" x="249" y="25" width="36" height="15"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                    </subviews>
-                                                    <constraints>
-                                                        <constraint firstItem="YeM-f8-SgV" firstAttribute="leading" secondItem="hyU-ed-4Ic" secondAttribute="trailing" constant="8" id="02N-DN-jmU" userLabel="left year"/>
-                                                        <constraint firstItem="YeM-f8-SgV" firstAttribute="top" secondItem="qs6-Za-Dp9" secondAttribute="bottom" constant="2" id="3Js-jd-B3Q" userLabel="top year"/>
-                                                        <constraint firstAttribute="trailing" secondItem="gZX-Rs-DZq" secondAttribute="trailing" constant="2" id="5Ng-nO-8tD" userLabel="trailing rating"/>
-                                                        <constraint firstAttribute="centerY" secondItem="hyU-ed-4Ic" secondAttribute="centerY" id="NMA-Aj-ORL"/>
-                                                        <constraint firstItem="qs6-Za-Dp9" firstAttribute="leading" secondItem="hyU-ed-4Ic" secondAttribute="trailing" constant="8" id="Wub-Eu-iJG" userLabel="left name"/>
-                                                        <constraint firstItem="qs6-Za-Dp9" firstAttribute="top" secondItem="kiR-y3-LxI" secondAttribute="top" constant="2" id="ZPk-pl-1kk" userLabel="top name"/>
-                                                        <constraint firstItem="hyU-ed-4Ic" firstAttribute="leading" secondItem="kiR-y3-LxI" secondAttribute="leading" constant="4" id="ns8-LA-NWO"/>
-                                                        <constraint firstAttribute="trailing" secondItem="qs6-Za-Dp9" secondAttribute="trailing" constant="8" id="tTO-bV-WGe" userLabel="trailing name"/>
-                                                        <constraint firstItem="gZX-Rs-DZq" firstAttribute="top" secondItem="qs6-Za-Dp9" secondAttribute="bottom" constant="2" id="vn3-MH-Ib5" userLabel="top rating"/>
-                                                    </constraints>
-                                                </tableViewCellContentView>
-                                                <connections>
-                                                    <outlet property="name" destination="qs6-Za-Dp9" id="L4a-LR-6wK"/>
-                                                    <outlet property="poster" destination="hyU-ed-4Ic" id="dPc-3B-tne"/>
-                                                    <outlet property="rating" destination="gZX-Rs-DZq" id="VOS-q9-fVc"/>
-                                                    <outlet property="year" destination="YeM-f8-SgV" id="DBY-xW-URu"/>
-                                                    <segue destination="Ah7-4n-0Wa" kind="modal" identifier="showOldDetail" modalTransitionStyle="flipHorizontal" id="jHL-f8-lKA"/>
-                                                </connections>
-                                            </tableViewCell>
-                                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="dummy2" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="dummy2" id="S9s-xu-RYq" customClass="TableViewCell">
-                                                <rect key="frame" x="0.0" y="110" width="320" height="44"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="S9s-xu-RYq" id="Uvm-VY-VW6">
-                                                    <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <subviews>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="oNQ-Yl-2Cv">
-                                                            <rect key="frame" x="4" y="2" width="30" height="40"/>
-                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="width" constant="30" id="LhY-gi-BLO"/>
-                                                                <constraint firstAttribute="height" constant="40" id="MeX-gW-i4t"/>
-                                                            </constraints>
-                                                        </imageView>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tce-Q5-gdt">
-                                                            <rect key="frame" x="42" y="2" width="237" height="21"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Year" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="63W-Cf-hz7">
-                                                            <rect key="frame" x="42" y="25" width="25" height="15"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rating" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NIK-34-LQe">
-                                                            <rect key="frame" x="249" y="25" width="36" height="15"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                    </subviews>
-                                                    <constraints>
-                                                        <constraint firstAttribute="centerY" secondItem="oNQ-Yl-2Cv" secondAttribute="centerY" id="GkA-HR-tkM"/>
-                                                        <constraint firstItem="63W-Cf-hz7" firstAttribute="leading" secondItem="oNQ-Yl-2Cv" secondAttribute="trailing" constant="8" id="Q8o-xF-3HZ" userLabel="left year"/>
-                                                        <constraint firstItem="Tce-Q5-gdt" firstAttribute="leading" secondItem="oNQ-Yl-2Cv" secondAttribute="trailing" constant="8" id="QJ0-ph-WIK" userLabel="left name"/>
-                                                        <constraint firstAttribute="trailing" secondItem="Tce-Q5-gdt" secondAttribute="trailing" constant="8" id="S3y-Va-D9Q" userLabel="trailing name"/>
-                                                        <constraint firstItem="Tce-Q5-gdt" firstAttribute="top" secondItem="Uvm-VY-VW6" secondAttribute="top" constant="2" id="kbQ-TD-ck3" userLabel="top name"/>
-                                                        <constraint firstAttribute="trailing" secondItem="NIK-34-LQe" secondAttribute="trailing" constant="2" id="pfd-dU-EdZ" userLabel="trailing rating"/>
-                                                        <constraint firstItem="63W-Cf-hz7" firstAttribute="top" secondItem="Tce-Q5-gdt" secondAttribute="bottom" constant="2" id="uGG-zv-eaT" userLabel="top year"/>
-                                                        <constraint firstItem="NIK-34-LQe" firstAttribute="top" secondItem="Tce-Q5-gdt" secondAttribute="bottom" constant="2" id="xY4-D1-dda" userLabel="top rating"/>
-                                                        <constraint firstItem="oNQ-Yl-2Cv" firstAttribute="leading" secondItem="Uvm-VY-VW6" secondAttribute="leading" constant="4" id="yEx-Nj-L9H"/>
-                                                    </constraints>
-                                                </tableViewCellContentView>
-                                                <connections>
-                                                    <outlet property="name" destination="Tce-Q5-gdt" id="WCw-Tv-UQd"/>
-                                                    <outlet property="poster" destination="oNQ-Yl-2Cv" id="UGa-yu-1Ks"/>
-                                                    <outlet property="rating" destination="NIK-34-LQe" id="kEM-kP-LZU"/>
-                                                    <outlet property="year" destination="63W-Cf-hz7" id="dTQ-vG-mhB"/>
-                                                    <segue destination="aRj-3A-pno" kind="push" identifier="showDetail" id="8KX-35-kN1"/>
-                                                </connections>
-                                            </tableViewCell>
                                         </prototypes>
                                         <sections/>
                                         <connections>
@@ -356,6 +248,8 @@
                         <outlet property="mainView" destination="gP9-9E-Sde" id="gbh-O7-19o"/>
                         <outlet property="searchDisplayController" destination="ZNx-pE-45J" id="dSK-gJ-LLa"/>
                         <outlet property="tableView" destination="mLL-gJ-YKr" id="UFM-Ts-6ni"/>
+                        <segue destination="Ah7-4n-0Wa" kind="modal" identifier="showOldDetail" modalTransitionStyle="flipHorizontal" id="dFR-4z-KnD"/>
+                        <segue destination="aRj-3A-pno" kind="push" identifier="showDetail" id="mhL-gt-n77"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mXN-xf-sC9" userLabel="First Responder" sceneMemberID="firstResponder"/>
