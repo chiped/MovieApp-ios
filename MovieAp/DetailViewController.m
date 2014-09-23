@@ -1,4 +1,5 @@
 #import "DetailViewController.h"
+#import "CastCell.h"
 
 @interface DetailViewController ()
 
@@ -70,7 +71,11 @@
         [self.activityView setHidden:NO];
         [self.activityView startAnimating];
         
-        [self downloadMovieDetails];
+        dispatch_async(self.downloadDataQueue, ^{
+            [self downloadMovieDetails];
+            [self downloadCastDetails];
+            [self displayData];
+        });
         
     }
 }
@@ -84,7 +89,6 @@
 
 -(void)downloadMovieDetails
 {
-    dispatch_async(self.downloadDataQueue, ^{
         NSData *data;
         NSError *error=nil;
         data=[NSData dataWithContentsOfURL:[self.movie getMovieDetailsURL]];
@@ -105,21 +109,19 @@
         self.posterImage = [UIImage imageWithData: [NSData dataWithContentsOfURL: [self.movie getLargePosterURL]]];
         
         self.plotString = [jsonobject objectForKey:@"overview"];
-        
-        //fill cast deatils
-        NSData *castdata=[NSData dataWithContentsOfURL:self.movie.castURL];
-        error=nil;
-        NSDictionary *castobject = [NSJSONSerialization JSONObjectWithData:castdata options:kNilOptions error:&error];
-        
-        NSArray *casts = [castobject objectForKey:@"cast"];
-        self.castItems = [[NSMutableArray alloc] init];
-        for(id cast in casts) {
-            [self.castItems addObject:[[Cast alloc] initWithJSON:cast]];
-        }
-        
-        [self displayData];
-    });
+}
 
+-(void)downloadCastDetails
+{
+    NSData *castdata=[NSData dataWithContentsOfURL:self.movie.castURL];
+    NSError *error=nil;
+    NSDictionary *castobject = [NSJSONSerialization JSONObjectWithData:castdata options:kNilOptions error:&error];
+    
+    NSArray *casts = [castobject objectForKey:@"cast"];
+    self.castItems = [[NSMutableArray alloc] init];
+    for(id cast in casts) {
+        [self.castItems addObject:[[Cast alloc] initWithJSON:cast]];
+    }
 }
 
 -(void)displayData
@@ -167,6 +169,7 @@
         
         [self.detailsView setHidden:NO];
         [self.activityView setHidden:YES];
+        [self.activityView stopAnimating];
     });
 }
 
@@ -175,11 +178,11 @@
     dispatch_async(self.castImagesQueue, ^{
         __block UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[cast photoURL]]];
         dispatch_async(dispatch_get_main_queue(), ^{
-            UITableViewCell *newCell = [tableView cellForRowAtIndexPath:indexPath];
+            CastCell *newCell = (CastCell *)[tableView cellForRowAtIndexPath:indexPath];
             if(!image) {
                 image = [UIImage imageNamed:@"noImage"];
             }
-            newCell.imageView.image = image;
+            newCell.castImage.image = image;
             [self.castImageList setObject:image forKey:indexPath];
             [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
         });
@@ -200,18 +203,38 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cast" forIndexPath:indexPath];
+    CastCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cast" forIndexPath:indexPath];
     
     Cast *cast = self.castItems[indexPath.row];
-    cell.textLabel.text = cast.name;
-    cell.detailTextLabel.text = cast.role;
-    cell.imageView.image = self.castImageList[indexPath];
+    cell.nameLabel.text = cast.name;
+    cell.roleLabel.text = cast.role;
+    cell.castImage.image = self.castImageList[indexPath];
     
     if(!self.castImageList[indexPath]) {
         [self downloadAndDisplayImageForCast:cast inTableView:tableView atIndexPath:indexPath];
     }
     
     return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    float width = (tableView.frame.size.width - 4 - 30 - 4 - 4)/2.0 - 2;
+    Cast *cast = self.castItems[indexPath.row];
+    float nameHeight = [self heightByAdjustingString:cast.name toWidth:width];
+    float roleHeight = [self heightByAdjustingString:cast.role toWidth:width];
+    float height = MAX(40, MAX(nameHeight, roleHeight)) + 8;
+    return height;
+}
+
+-(CGFloat) heightByAdjustingString:(NSString *)string toWidth:(CGFloat)width
+{
+    CGRect size = [string
+                   boundingRectWithSize:CGSizeMake(width, 999)
+                   options:NSStringDrawingUsesLineFragmentOrigin
+                   attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:20.0f]}
+                   context:nil];
+    return size.size.height;
 }
 
 @end

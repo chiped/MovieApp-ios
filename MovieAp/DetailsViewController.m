@@ -1,5 +1,6 @@
 #import "DetailsViewController.h"
 #import "PosterCell.h"
+#import "CastCell.h"
 
 #define POSTER_TITLE @"Poster"
 #define OVERVIEW_TITLE @"Overview"
@@ -61,62 +62,10 @@
         [self.spinner setHidden:NO];
         [self.spinner startAnimating];
         
-        __block NSData *data;
-        __block NSError *error=nil;
-        
-        dispatch_async(self.downloadDataQueue, ^{
-            data=[NSData dataWithContentsOfURL:[self.movie getMovieDetailsURL]];
-            NSDictionary *jsonobject = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-            
-            self.poster = [UIImage imageWithData: [NSData dataWithContentsOfURL: [self.movie getLargePosterURL]]];
-            if(!self.poster) {
-                [self.sectionHeaderTitles removeObject:POSTER_TITLE];
-            }
-            self.plotText = [jsonobject objectForKey:@"overview"];
-            if(!self.plotText || self.plotText.class == NSNull.class || [self.plotText isEqualToString:@""]) {
-                [self.sectionHeaderTitles removeObject:OVERVIEW_TITLE];
-            }
-            
-            NSArray *genres = [jsonobject objectForKey:@"genres"];
-            self.genreString = [Constants stringByJoiningArray:genres with:@", "];
-            if([self.genreString isEqualToString:@""]) {
-                [self.sectionHeaderTitles removeObject:GENRE_TITLE];
-            }
-            
-            NSArray *productions = [jsonobject objectForKey:@"production_companies"];
-            self.productionString =[ Constants stringByJoiningArray:productions with:@", "];
-            if([self.productionString isEqualToString:@""]) {
-                [self.sectionHeaderTitles removeObject:PRODUCTION_TITLE];
-            }
-            
-            NSArray *languages = [jsonobject objectForKey:@"spoken_languages"];
-            self.languageString = [Constants stringByJoiningArray:languages with:@", "];
-            if([self.languageString isEqualToString:@""]) {
-                [self.sectionHeaderTitles removeObject:LANGUAGE_TITLE];
-            }
-            
-            NSArray *countries = [jsonobject objectForKey:@"production_countries"];
-            self.locationString = [Constants stringByJoiningArray:countries with:@", "];
-            if([self.locationString isEqualToString:@""]) {
-                [self.sectionHeaderTitles removeObject:LOCATION_TITLE];
-            }
-            
-            //fill cast deatils
-            NSData *castdata=[NSData dataWithContentsOfURL:self.movie.castURL];
-            error=nil;
-            NSDictionary *castobject = [NSJSONSerialization JSONObjectWithData:castdata options:kNilOptions error:&error];
-            
-            NSArray *casts = [castobject objectForKey:@"cast"];
-            self.castItems = [[NSMutableArray alloc] init];
-            for(id cast in casts) {
-                [self.castItems addObject:[[Cast alloc] initWithJSON:cast]];
-            }
-            if(self.castItems.count == 0) {
-                [self.sectionHeaderTitles removeObject:CAST_TITLE];
-            }
-            
+        dispatch_async(self.downloadDataQueue, ^{            
+            [self downloadMovieDetails];
+            [self downloadCastDetails];
             dispatch_async(dispatch_get_main_queue(), ^{
-                
                 [self.tableView reloadData];
                 [self.detailsView setHidden:NO];
                 [self.spinner setHidden:YES];
@@ -126,45 +75,100 @@
     }
 }
 
-#pragma mark - Table view methods
-
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+-(void) downloadMovieDetails
 {
-    //all headers
-    if(indexPath.row == 0) {
-        if(indexPath.section == 0) {
-            CGRect size = [self.movie.title
-                           boundingRectWithSize:CGSizeMake(tableView.frame.size.width, 999)
-                           options:NSStringDrawingUsesLineFragmentOrigin
-                           attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:20.0f]}
-                           context:nil];
-            return size.size.height;
-        } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:POSTER_TITLE]) {
-            float height = MAX([UIImage imageNamed:@"expandIcon"].size.height, 20);
-            return height + 8;
-        } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:OVERVIEW_TITLE]) {
-            float height = MAX([UIImage imageNamed:@"expandIcon"].size.height, 20);
-            return height + 8;
-        } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:GENRE_TITLE]) {
-            float height = MAX([UIImage imageNamed:@"expandIcon"].size.height, 20);
-            return height + 8;
-        } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:PRODUCTION_TITLE]) {
-            float height = MAX([UIImage imageNamed:@"expandIcon"].size.height, 20);
-            return height + 8;
-        } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:LANGUAGE_TITLE]) {
-            float height = MAX([UIImage imageNamed:@"expandIcon"].size.height, 20);
-            return height + 8;
-        } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:LOCATION_TITLE]) {
-            float height = MAX([UIImage imageNamed:@"expandIcon"].size.height, 20);
-            return height + 8;
-        } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:CAST_TITLE])  {
-            float height = MAX([UIImage imageNamed:@"expandIcon"].size.height, 20);
-            return height + 8;
-        }
+    NSData *data;
+    NSError *error=nil;
+    
+    data=[NSData dataWithContentsOfURL:[self.movie getMovieDetailsURL]];
+    NSDictionary *jsonobject = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+    
+    self.poster = [UIImage imageWithData: [NSData dataWithContentsOfURL: [self.movie getLargePosterURL]]];
+    if(!self.poster) {
+        [self.sectionHeaderTitles removeObject:POSTER_TITLE];
+    }
+    self.plotText = [jsonobject objectForKey:@"overview"];
+    if(!self.plotText || self.plotText.class == NSNull.class || [self.plotText isEqualToString:@""]) {
+        [self.sectionHeaderTitles removeObject:OVERVIEW_TITLE];
     }
     
-    //actual values
+    NSArray *genres = [jsonobject objectForKey:@"genres"];
+    self.genreString = [Constants stringByJoiningArray:genres with:@", "];
+    if([self.genreString isEqualToString:@""]) {
+        [self.sectionHeaderTitles removeObject:GENRE_TITLE];
+    }
+    
+    NSArray *productions = [jsonobject objectForKey:@"production_companies"];
+    self.productionString =[ Constants stringByJoiningArray:productions with:@", "];
+    if([self.productionString isEqualToString:@""]) {
+        [self.sectionHeaderTitles removeObject:PRODUCTION_TITLE];
+    }
+    
+    NSArray *languages = [jsonobject objectForKey:@"spoken_languages"];
+    self.languageString = [Constants stringByJoiningArray:languages with:@", "];
+    if([self.languageString isEqualToString:@""]) {
+        [self.sectionHeaderTitles removeObject:LANGUAGE_TITLE];
+    }
+    
+    NSArray *countries = [jsonobject objectForKey:@"production_countries"];
+    self.locationString = [Constants stringByJoiningArray:countries with:@", "];
+    if([self.locationString isEqualToString:@""]) {
+        [self.sectionHeaderTitles removeObject:LOCATION_TITLE];
+    }
+
+}
+
+-(void) downloadCastDetails
+{
+    NSData *castdata=[NSData dataWithContentsOfURL:self.movie.castURL];
+    NSError *error=nil;
+    NSDictionary *castobject = [NSJSONSerialization JSONObjectWithData:castdata options:kNilOptions error:&error];
+    
+    NSArray *casts = [castobject objectForKey:@"cast"];
+    self.castItems = [[NSMutableArray alloc] init];
+    for(id cast in casts) {
+        [self.castItems addObject:[[Cast alloc] initWithJSON:cast]];
+    }
+    if(self.castItems.count == 0) {
+        [self.sectionHeaderTitles removeObject:CAST_TITLE];
+    }
+}
+
+-(CGFloat)heightForHeaderRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    float width = self.tableView.frame.size.width;
+    if(indexPath.section == 0) {
+        return [self heightByAdjustingString:self.movie.title toWidth:width];
+    } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:POSTER_TITLE]) {
+        float height = MAX([UIImage imageNamed:@"expandIcon"].size.height, 20);
+        return height + 8;
+    } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:OVERVIEW_TITLE]) {
+        float height = MAX([UIImage imageNamed:@"expandIcon"].size.height, 20);
+        return height + 8;
+    } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:GENRE_TITLE]) {
+        float height = MAX([UIImage imageNamed:@"expandIcon"].size.height, 20);
+        return height + 8;
+    } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:PRODUCTION_TITLE]) {
+        float height = MAX([UIImage imageNamed:@"expandIcon"].size.height, 20);
+        return height + 8;
+    } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:LANGUAGE_TITLE]) {
+        float height = MAX([UIImage imageNamed:@"expandIcon"].size.height, 20);
+        return height + 8;
+    } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:LOCATION_TITLE]) {
+        float height = MAX([UIImage imageNamed:@"expandIcon"].size.height, 20);
+        return height + 8;
+    } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:CAST_TITLE])  {
+        float height = MAX([UIImage imageNamed:@"expandIcon"].size.height, 20);
+        return height + 8;
+    } else {
+        return 0;
+    }
+}
+
+-(CGFloat)heightForActuaLRowAtIndexPath:(NSIndexPath *)indexPath
+{
     float height = 0;
+    float width = self.tableView.frame.size.width;
     if(indexPath.section == 0) {
         height =  25;
     } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:POSTER_TITLE]) {
@@ -172,96 +176,131 @@
             height = 216;
         }
     } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:OVERVIEW_TITLE]) {
-        height = [self heightByAdjustingString:self.plotText];
+        height = [self heightByAdjustingString:self.plotText toWidth:width];
     } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:GENRE_TITLE]) {
-        height = [self heightByAdjustingString:self.genreString];
+        height = [self heightByAdjustingString:self.genreString toWidth:width];
     } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:PRODUCTION_TITLE]) {
-        height = [self heightByAdjustingString:self.productionString];
+        height = [self heightByAdjustingString:self.productionString toWidth:width];
     } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:LANGUAGE_TITLE]) {
-        height = [self heightByAdjustingString:self.languageString];
+        height = [self heightByAdjustingString:self.languageString toWidth:width];
     } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:LOCATION_TITLE]) {
-        height = [self heightByAdjustingString:self.locationString];
+        height = [self heightByAdjustingString:self.locationString toWidth:width];
     } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:CAST_TITLE]) {
-        height = 100;
+        width = (self.tableView.frame.size.width - 16 - 30 - 4 - 16)/2.0 - 2;
+        Cast *cast = self.castItems[indexPath.row-1];
+        float nameHeight = [self heightByAdjustingString:cast.name toWidth:width];
+        float roleHeight = [self heightByAdjustingString:cast.role toWidth:width];
+        height = MAX(40, MAX(nameHeight, roleHeight)) + 8;
     }
     return height;
 }
 
--(CGFloat) heightByAdjustingString:(NSString *)string
+-(CGFloat) heightByAdjustingString:(NSString *)string toWidth:(CGFloat)width
 {
     CGRect size = [string
-                   boundingRectWithSize:CGSizeMake(self.tableView.frame.size.width, 999)
+                   boundingRectWithSize:CGSizeMake(width, 999)
                    options:NSStringDrawingUsesLineFragmentOrigin
                    attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:20.0f]}
                    context:nil];
     return size.size.height;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+-(UITableViewCell *)cellForHeaderRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell;
-    cell = [tableView dequeueReusableCellWithIdentifier:@"detailsCell"];
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"detailsCell"];
     cell.textLabel.text = nil;
     cell.detailTextLabel.text = nil;
     cell.imageView.image = nil;
-    if(indexPath.row == 0) {
-        if(indexPath.section == 0) {
-            cell.textLabel.numberOfLines = 0;
-            cell.textLabel.text = self.movie.title;
-        }else {
-            if([self.shouldHideRowsAtIndex[indexPath.section] boolValue])
-                cell.imageView.image = [UIImage imageNamed:@"expandIcon"];
-            else
-                cell.imageView.image = [UIImage imageNamed:@"collapseIcon"];
-            cell.textLabel.text = self.sectionHeaderTitles[indexPath.section];
-        }
+    if(indexPath.section == 0) {
+        cell.textLabel.numberOfLines = 0;
+        cell.textLabel.text = self.movie.title;
     } else {
-        if (indexPath.section == 0) {
-            cell.textLabel.text = self.movie.date;
-            cell.detailTextLabel.text = self.movie.rating;
-        } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:POSTER_TITLE]) {
-            cell = [tableView dequeueReusableCellWithIdentifier:@"posterCell"];
-            ((PosterCell *)cell).posterImage.image = self.poster;
-        } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:OVERVIEW_TITLE]) {
-            cell.textLabel.numberOfLines = 0;
-            cell.textLabel.text = self.plotText;
-        } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:GENRE_TITLE]) {
-            cell.textLabel.numberOfLines = 0;
-            cell.textLabel.text = self.genreString;
-        } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:PRODUCTION_TITLE]) {
-            cell.textLabel.numberOfLines = 0;
-            cell.textLabel.text = self.productionString;
-        } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:LANGUAGE_TITLE])  {
-            cell.textLabel.numberOfLines = 0;
-            cell.textLabel.text = self.languageString;
-        } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:LOCATION_TITLE]) {
-            cell.textLabel.numberOfLines = 0;
-            cell.textLabel.text = self.locationString;
-        } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:CAST_TITLE]) {
-            Cast *cast = self.castItems[indexPath.row-1];
-            cell.textLabel.numberOfLines = 0;
-            cell.textLabel.text = cast.name;
-            cell.detailTextLabel.numberOfLines = 0;
-            cell.detailTextLabel.text = cast.role;
-            cell.imageView.image = self.castImageList[indexPath];
-            if(!self.castImageList[indexPath]) {
-                cell.imageView.image = [UIImage imageNamed:@"noImage"];
-                dispatch_async(self.castImagesQueue, ^{
-                    __block UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[cast photoURL]]];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        UITableViewCell *newCell = [tableView cellForRowAtIndexPath:indexPath];
-                        if(!image) {
-                            image = [UIImage imageNamed:@"noImage"];
-                        }
-                        newCell.imageView.image = image;
-                        [self.castImageList setObject:image forKey:indexPath];
-                        [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                    });
-                });
-            } //end if no image
-        }
+        if([self.shouldHideRowsAtIndex[indexPath.section] boolValue])
+            cell.imageView.image = [UIImage imageNamed:@"expandIcon"];
+        else
+            cell.imageView.image = [UIImage imageNamed:@"collapseIcon"];
+        cell.textLabel.text = self.sectionHeaderTitles[indexPath.section];
     }
     return cell;
+}
+
+-(UITableViewCell *)cellForCastRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CastCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"castCell"];
+    cell.imageView.image = nil;
+    Cast *cast = self.castItems[indexPath.row-1];
+    cell.nameLabel.text = cast.name;
+    cell.roleLabel.text = cast.role;
+    cell.castImage.image = self.castImageList[indexPath];
+    if(!self.castImageList[indexPath]) {
+        cell.imageView.image = [UIImage imageNamed:@"noImage"];
+        dispatch_async(self.castImagesQueue, ^{
+            __block UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[cast photoURL]]];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                CastCell *newCell = (CastCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+                if(!image) {
+                    image = [UIImage imageNamed:@"noImage"];
+                }
+                newCell.castImage.image = image;
+                [self.castImageList setObject:image forKey:indexPath];
+                [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            });
+        });
+    } //end if no image
+    return cell;
+}
+
+-(UITableViewCell *)cellForActualRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"detailsCell"];
+    cell.textLabel.text = nil;
+    cell.detailTextLabel.text = nil;
+    cell.imageView.image = nil;
+    if (indexPath.section == 0) {
+        cell.textLabel.text = self.movie.date;
+        cell.detailTextLabel.text = self.movie.rating;
+    } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:POSTER_TITLE]) {
+        cell = [self.tableView dequeueReusableCellWithIdentifier:@"posterCell"];
+        ((PosterCell *)cell).posterImage.image = self.poster;
+    } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:OVERVIEW_TITLE]) {
+        cell.textLabel.numberOfLines = 0;
+        cell.textLabel.text = self.plotText;
+    } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:GENRE_TITLE]) {
+        cell.textLabel.numberOfLines = 0;
+        cell.textLabel.text = self.genreString;
+    } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:PRODUCTION_TITLE]) {
+        cell.textLabel.numberOfLines = 0;
+        cell.textLabel.text = self.productionString;
+    } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:LANGUAGE_TITLE])  {
+        cell.textLabel.numberOfLines = 0;
+        cell.textLabel.text = self.languageString;
+    } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:LOCATION_TITLE]) {
+        cell.textLabel.numberOfLines = 0;
+        cell.textLabel.text = self.locationString;
+    } else if(indexPath.section == [self.sectionHeaderTitles indexOfObject:CAST_TITLE]) {
+        cell = [self cellForCastRowAtIndexPath:indexPath];
+    }
+    return cell;
+}
+
+#pragma mark - Table view methods
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(indexPath.row == 0) {
+        return [self heightForHeaderRowAtIndexPath:indexPath];
+    } else {
+        return [self heightForActuaLRowAtIndexPath:indexPath];
+    }
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(indexPath.row == 0) {
+        return [self cellForHeaderRowAtIndexPath:indexPath];
+    } else {
+        return [self cellForActualRowAtIndexPath:indexPath];
+    }
 }
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
